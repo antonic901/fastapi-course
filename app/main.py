@@ -8,10 +8,16 @@ from app.config import get_settings, Settings
 app = FastAPI()
 
 
-@app.get("/ping")
-def pong(settings: Settings = Depends(get_settings)):
+@app.get("/health")
+def pong():
     return {
-        "ping": "pong!",
+        "message": "API is online!",
+    }
+
+
+@app.get("/status")
+def status(settings: Settings = Depends(get_settings)):
+    return {
         "environment": settings.environment,
-        "testing": settings.testing
+        "testing": settings.testing,
     }
