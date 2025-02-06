@@ -13,6 +13,7 @@ from src.database.models import DBBase
 
 # import your models here
 from src.item.models import *
+from src.user.models import *
 
 load_dotenv()
 
