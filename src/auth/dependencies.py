@@ -5,6 +5,7 @@ from typing import Annotated
 from fastapi import Request, Depends
 
 from .exceptions import AuthException, Unauthorized
+from .enums import UserRole
 
 from src.user.service import get, create
 from src.user.schemas import UserProfileCreate
@@ -53,7 +54,7 @@ async def get_userprofile(user_id: ValidToken, db_session: DbAsyncSession):
     db_userprofile = await get(db_session, user_id)
     if not db_userprofile:
         userprofile = UserProfileCreate.model_validate(
-            {"id": user_id, "first_name": "", "last_name": ""}
+            {"id": user_id, "role": UserRole.NORMAL, "first_name": "", "last_name": ""}
         )
         db_userprofile = await create(db_session, userprofile)
 
@@ -61,3 +62,13 @@ async def get_userprofile(user_id: ValidToken, db_session: DbAsyncSession):
 
 
 UserProfile = Annotated[DBUserProfile, Depends(get_userprofile)]
+
+
+def is_superadmin(db_userprofile: UserProfile):
+    if db_userprofile.role == UserRole.SUPER_ADMIN:
+        return UserProfile
+
+    raise Unauthorized()
+
+
+SuperAdmin = Annotated[DBUserProfile, Depends(is_superadmin)]

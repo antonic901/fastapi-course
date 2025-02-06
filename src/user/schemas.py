@@ -3,10 +3,13 @@ from datetime import datetime
 from pydantic import BaseModel
 from pydantic import ConfigDict
 
+from src.auth.enums import UserRole
+
 
 class UserProfileBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    role: UserRole
     first_name: str
     last_name: str
 
@@ -26,5 +29,6 @@ class UserProfileRead(UserProfileBase):
 
 
 class UserProfileUpdate(UserProfileBase):
+    role: UserRole | None = None
     first_name: str | None = None
     last_name: str | None = None
