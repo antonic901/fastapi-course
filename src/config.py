@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     environment: str = "dev"
     testing: bool = bool(0)
     database_url: str = None
+    hanko_api_url: str = None
 
 
 @lru_cache()
