@@ -6,7 +6,6 @@ from fastapi import Request, Depends
 
 from .core import Authorization
 from .exceptions import AuthException, Unauthorized
-from .enums import UserRole
 
 from src.user.service import get, create
 from src.user.schemas import UserProfileCreate
@@ -62,7 +61,7 @@ async def get_userprofile(
     db_userprofile = await get(db_session, user_id)
     if not db_userprofile:
         userprofile = UserProfileCreate.model_validate(
-            {"id": user_id, "role": UserRole.NORMAL, "first_name": "", "last_name": ""}
+            {"id": user_id, "first_name": "", "last_name": ""}
         )
         db_userprofile = await create(db_session, userprofile)
         await auth.api.sync_user(

@@ -1,10 +1,4 @@
-from enum import Enum, StrEnum
-
-
-class UserRole(Enum):
-    NORMAL = "NORMAL"
-    ADMIN = "ADMIN"
-    SUPER_ADMIN = "SUPER_ADMIN"
+from enum import StrEnum
 
 
 class GlobalPermissionAction(StrEnum):
