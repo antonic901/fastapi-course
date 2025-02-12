@@ -10,6 +10,7 @@ class ItemBase(BaseModel):
     icon: str
     title: str = Field(max_length=128)
     description: str
+    creator_id: str
 
 
 class Item(ItemBase):
