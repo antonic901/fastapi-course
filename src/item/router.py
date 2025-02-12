@@ -1,7 +1,7 @@
 from typing import Annotated
 from http import HTTPStatus
 
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query
 
 from .schemas import ItemRead, ItemCreate, ItemUpdate
 from .service import get_all, create, update, delete
@@ -10,7 +10,6 @@ from .dependencies import ValidItem
 from src.database.core_async import DbAsyncSession
 from src.database.dependencies import DbOffset
 
-from src.auth.dependencies import is_superadmin
 
 router = APIRouter()
 
@@ -30,12 +29,7 @@ async def get_item(db_item: ValidItem):
     return ItemRead.model_validate(db_item)
 
 
-@router.post(
-    "",
-    response_model=ItemRead,
-    status_code=HTTPStatus.CREATED,
-    dependencies=[Depends(is_superadmin)],
-)
+@router.post("", response_model=ItemRead, status_code=HTTPStatus.CREATED)
 async def create_item(db_session: DbAsyncSession, item: ItemCreate):
     db_item = await create(db_session, item)
     return ItemRead.model_validate(db_item)

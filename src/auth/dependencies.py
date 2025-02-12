@@ -80,13 +80,3 @@ async def get_userprofile(
 
 
 UserProfile = Annotated[DBUserProfile, Depends(get_userprofile)]
-
-
-def is_superadmin(db_userprofile: UserProfile):
-    if db_userprofile.role == UserRole.SUPER_ADMIN:
-        return UserProfile
-
-    raise Unauthorized()
-
-
-SuperAdmin = Annotated[DBUserProfile, Depends(is_superadmin)]
