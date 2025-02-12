@@ -1,3 +1,4 @@
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.database.models import DBBase
@@ -10,3 +11,4 @@ class DBItem(DBBase):
     icon: Mapped[str]
     title: Mapped[str]
     description: Mapped[str]
+    creator_id: Mapped[str] = mapped_column(ForeignKey("userprofiles.id"))
