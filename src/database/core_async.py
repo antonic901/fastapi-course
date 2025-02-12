@@ -1,7 +1,8 @@
 import contextlib
 from typing import Any, AsyncIterator, Annotated
+from http import HTTPStatus
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncSession,
@@ -50,9 +51,9 @@ class DatabaseSessionManager:
         session = self._sessionmaker()
         try:
             yield session
-        except Exception:
+        except Exception as e:
             await session.rollback()
-            raise
+            raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, str(e.orig))
         finally:
             await session.close()
 
