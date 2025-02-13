@@ -6,11 +6,10 @@ from fastapi import APIRouter, Query, Depends
 from .schemas import ItemRead, ItemCreate, ItemUpdate
 from .service import get_all, create, update, delete
 from .dependencies import ValidItem
+from .permissions import crud_permission
 
 from src.database.core_async import DbAsyncSession
 from src.database.dependencies import DbOffset
-
-from src.auth.permissions import crud_permission
 
 router = APIRouter(dependencies=[Depends(crud_permission)])
 
