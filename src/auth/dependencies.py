@@ -4,6 +4,7 @@ from typing import Annotated
 
 from fastapi import Request, Depends
 
+from .core import Authorization
 from .exceptions import AuthException, Unauthorized
 from .enums import UserRole
 
@@ -39,7 +40,7 @@ def validate_token(request: Request) -> str:
             audience="localhost",
         )
         if data:
-            return data["sub"]
+            return data
 
     except (jwt.DecodeError, Exception):
         raise AuthException()
@@ -47,16 +48,33 @@ def validate_token(request: Request) -> str:
     raise Unauthorized()
 
 
-ValidToken = Annotated[str, Depends(validate_token)]
+ValidToken = Annotated[dict, Depends(validate_token)]
 
 
-async def get_userprofile(user_id: ValidToken, db_session: DbAsyncSession):
+async def get_userprofile(
+    hanko_data: ValidToken,
+    db_session: DbAsyncSession,
+    auth: Authorization,
+):
+    user_id = hanko_data["sub"]
+    user_email = hanko_data["email"]["address"]
+
     db_userprofile = await get(db_session, user_id)
     if not db_userprofile:
         userprofile = UserProfileCreate.model_validate(
             {"id": user_id, "role": UserRole.NORMAL, "first_name": "", "last_name": ""}
         )
         db_userprofile = await create(db_session, userprofile)
+        await auth.api.sync_user(
+            {
+                "key": user_id,
+                "email": user_email,
+                "attributes": {
+                    "roles": ["viewer"],
+                },
+            },
+        )
+        await auth.api.assign_role(user_id, "viewer", "default")
 
     return db_userprofile
 

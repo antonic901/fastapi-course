@@ -13,5 +13,5 @@ class AuthException(HTTPException):
 
 
 class Unauthorized(HTTPException):
-    def __init__(self, headers=None):
-        super().__init__(HTTPStatus.UNAUTHORIZED, "Unauthorized", headers)
+    def __init__(self, message="Unauthorized", headers=None):
+        super().__init__(HTTPStatus.UNAUTHORIZED, message, headers)

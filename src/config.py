@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     testing: bool = bool(0)
     database_url: str = None
     hanko_api_url: str = None
+    permit_api_url: str = None
+    permit_token: str = None
 
     model_config = SettingsConfigDict(env_file=".env")
 
