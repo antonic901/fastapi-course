@@ -1,7 +1,7 @@
 import logging
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 log = logging.getLogger("uvicorn")
@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     testing: bool = bool(0)
     database_url: str = None
     hanko_api_url: str = None
+
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 @lru_cache()
